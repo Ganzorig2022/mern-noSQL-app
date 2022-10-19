@@ -2,19 +2,20 @@ import React, { useRef, useEffect } from 'react';
 
 import './Map.css';
 
-const Map = props => {
+//map javascript api key-gee public/index.html dotor bairluulsnaar ajillana.
+const Map = (props) => {
   const mapRef = useRef();
-  
+
   const { center, zoom } = props;
 
   useEffect(() => {
     const map = new window.google.maps.Map(mapRef.current, {
       center: center,
-      zoom: zoom
+      zoom: zoom,
     });
-  
+
     new window.google.maps.Marker({ position: center, map: map });
-  }, [center, zoom]);  
+  }, [center, zoom]);
 
   return (
     <div
