@@ -80,7 +80,7 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         );
-        auth.login(responseData.user.id);
+        auth.login(responseData.userId, responseData.token);
       } catch (error) {}
     } else {
       // new FormData is built-in js method. Image file is binary data. That's why we can't use JSON format data.
