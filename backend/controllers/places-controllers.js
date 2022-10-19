@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
@@ -88,8 +88,7 @@ const createPlace = async (req, res, next) => {
     title,
     description,
     location: coordinates,
-    image:
-      'https://images.unsplash.com/photo-1661956600684-97d3a4320e45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    image: req.file.path,
     creator,
   });
 
@@ -124,6 +123,7 @@ const createPlace = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
+//========================================================================================
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -160,6 +160,7 @@ const updatePlace = async (req, res, next) => {
   res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
+//========================================================================================
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
@@ -177,6 +178,7 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
+  const imagePath = place.image;
   //delete place from users collection's "places" [] array.
   try {
     const sess = await mongoose.startSession();
@@ -193,6 +195,9 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
   res.status(200).json({ message: 'Deleted place.' });
 };
 

@@ -1,3 +1,5 @@
+const fs = require('fs'); //built-in filesystem node-js module
+const path = require('path'); //built-in path node-js module
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -10,6 +12,10 @@ const app = express();
 
 //middleware
 app.use(bodyParser.json());
+
+//middleware for image. express.static returns requested file from
+//"./uploads/images" folder
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 //cors error
 app.use((req, res, next) => {
@@ -33,7 +39,15 @@ app.use((req, res, next) => {
   throw error;
 });
 
+//GENERAL ERROR HANDLER
 app.use((error, req, res, next) => {
+  //roll back image upload if signup request is failed. Maybe user already exists then no need to save image upload!!!
+  if (req.file) {
+    //delete image from "uploads/images"
+    fs.unlink(req.file.path, (err) => {
+      // console.log(err);
+    });
+  }
   if (res.headerSent) {
     return next(error);
   }

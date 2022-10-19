@@ -30,4 +30,4 @@ async function getCoordsForAddress(address) {
   return coordinates;
 }
 
-module.exports = getCoordsForAddress; //import in places.controller
+module.exports = getCoordsForAddress; //import in "places.controller"
