@@ -6,5 +6,7 @@ npm i --save express body-parser
 npm i --save mongoose
 npm i mongoose-unique-validator
 npm i multer
+npm i --save bcryptjs
+npm i --save jsonwebtoken
 
 <!-- Multer is a node.js middleware for handling multipart/form-data -->

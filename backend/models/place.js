@@ -12,7 +12,7 @@ const placeSchema = new Schema({
     lng: { type: Number, required: true },
   },
 
-  //user's id who added this place document will be added here
+  //user id who added this place document will be added here
   creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
 });
 

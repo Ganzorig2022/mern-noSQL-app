@@ -147,6 +147,13 @@ const updatePlace = async (req, res, next) => {
   place.title = title;
   place.description = description;
 
+  //Check if logged user who actually created this document or not. If user is not created it, then can not update document.
+  // mongoose special object id. SHould convert to normal STRING.
+  if (place.creator.toString() !== req.userData.userId) {
+    const error = new HttpError('You are not allowed to edit this place.', 401);
+    return next(error);
+  }
+
   try {
     await place.save();
   } catch (err) {
@@ -160,13 +167,14 @@ const updatePlace = async (req, res, next) => {
   res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
-//========================================================================================
+//========================================DELETE====================================
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
   let place;
 
   try {
+    //populate method ni tuhain doc-iig uusgesen hereglegchiin data-g "places" collection-iin doc-d hawsargaj oruulj ogoh bolomjtoi bolgodog.
     place = await Place.findById(placeId).populate('creator');
   } catch (err) {
     const error = new HttpError('Could not find a place for that id.', 500);
@@ -175,6 +183,15 @@ const deletePlace = async (req, res, next) => {
 
   if (!place) {
     const error = new HttpError('Could not find the place for this id.', 404);
+    return next(error);
+  }
+
+  //Check if logged user who actually created this document or not. If user is not created it, then can not update document.
+  if (place.creator.id !== req.userData.userId) {
+    const error = new HttpError(
+      'You are not allowed to delete this place.',
+      401
+    );
     return next(error);
   }
 
