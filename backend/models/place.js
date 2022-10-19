@@ -11,7 +11,9 @@ const placeSchema = new Schema({
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
   },
-  creator: { type: String, required: true },
+
+  //user's id who added this place document will be added here
+  creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
 });
 
 module.exports = mongoose.model('Place', placeSchema);
