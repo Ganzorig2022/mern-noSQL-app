@@ -17,27 +17,37 @@ app.use(bodyParser.json());
 //"./uploads/images" folder
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
+//==========================1) DEPLOY both back end front end======================
+// 1) commented out codes in row 41-43, 25-35. Because no longer needed in production. Only used for development
+app.use(express.static(path.join('public')));
+
 //cors error
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+//   );
 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
 
-  next();
-});
+//   next();
+// });
 
-app.use('/api/places', placesRoutes); // => /api/places...
+//routes
+app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
 
-//handling error for unsupperted routes
+//==========================2) DEPLOY both back end front end======================
 app.use((req, res, next) => {
-  const error = new HttpError('Could not find this route.', 404);
-  throw error;
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
+
+//handling error for unsupperted routes
+// app.use((req, res, next) => {
+//   const error = new HttpError('Could not find this route.', 404);
+//   throw error;
+// });
 
 //GENERAL ERROR HANDLER
 app.use((error, req, res, next) => {
@@ -55,13 +65,13 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
-//connect returns promise
+//connect returns promise. Env variables imported from "nodemon.json"
 mongoose
   .connect(
-    'mongodb+srv://user1:FhVqzPd6TR0Z0OMN@cluster0.wq4zahi.mongodb.net/mern?retryWrites=true&w=majority'
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq4zahi.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
   )
   .then(() => {
-    app.listen(5000);
+    app.listen(process.env.PORT || 5000);
   })
   .catch((err) => {
     console.log(err);

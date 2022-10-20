@@ -61,3 +61,4 @@ https://reactjs.org/docs/code-splitting.html
 6. How do I switch branches from master to main? (heroku dr deploy-dsnii daraa engiin main branch ruugaa herhen ochix)
    git checkout -b main
    git branch -D master
+7.
