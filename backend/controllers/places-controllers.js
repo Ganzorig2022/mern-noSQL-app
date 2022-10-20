@@ -73,7 +73,7 @@ const createPlace = async (req, res, next) => {
     );
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
 
@@ -89,13 +89,13 @@ const createPlace = async (req, res, next) => {
     description,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId, //comes from "check-auth.js" newly created "userData" object.
   });
 
   let user;
 
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError('Creating place failed, please try again', 500);
     return next(error);
